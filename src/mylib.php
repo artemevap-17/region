@@ -263,6 +263,44 @@
             imagefill($image, 0, 0, $backgroundColor);
             imagesavealpha($image, true);
             return $image;
-        }   
+        }
+    }
+
+    function get_footer($array_POST, $edge_lenght)
+    {
+        $fontSize = 18;
+        $padding = 40;
+        $fontPath = 'ttf//YandexSansDisplay-Regular.ttf';
+        $text1 = "Государственное бюджетное учреждение здравоохранения";
+        $bbox1 = imagettfbbox($fontSize, 0, $fontPath, $text1);
+        $textWidth1 = $bbox1[2] - $bbox1[0];
+        $textHeight1 = $bbox1[1] - $bbox1[7];
+
+        $text2 = "\"Челябинский областной медицинский информационно-аналитический центр\"";
+        $bbox2 = imagettfbbox($fontSize, 0, $fontPath, $text2);
+        $textWidth2 = $bbox2[2] - $bbox2[0];
+        $textHeight2 = $bbox2[1] - $bbox2[7];
+
+        
+        $imageWidth = imagesx(get_map($array_POST, $edge_lenght)) + imagesx(get_legend($array_POST, $edge_lenght));
+        $imageHeight = $textHeight1 + $textHeight2 + 40;
+
+        $image = imagecreatetruecolor($imageWidth, $imageHeight);
+        $backgroundColor = imagecolorallocatealpha($image, 0, 0, 0, 127);
+        imagefill($image, 0, 0, $backgroundColor);
+        imagesavealpha($image, true);
+        $textColor = imagecolorallocate($image, 0, 0, 0);
+
+        $x1 = 8.5 * $edge_lenght - $textWidth1 / 2;
+        $y1 = ($imageHeight + $textHeight1) / 2 - $bbox1[1] - 30;
+        imagettftext($image, $fontSize, 0, $x1, $y1, $textColor, $fontPath, $text1);
+
+        $x2 = 8.5 * $edge_lenght - $textWidth2 / 2;
+        $y2 = (($imageHeight + $textHeight1) + $textHeight2) / 2 - $bbox2[1] - 15;
+        imagettftext($image, $fontSize, 0, $x1, $y1, $textColor, $fontPath, $text1);
+        imagettftext($image, $fontSize, 0, $x2, $y2, $textColor, $fontPath, $text2);
+        
+        return $image;
+
     }
 ?>

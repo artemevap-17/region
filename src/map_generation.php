@@ -8,10 +8,11 @@
     $image_map = get_map($_POST, $edge_lenght);
     $image_header = get_header($_POST, $edge_lenght);
     $image_legend = get_legend($_POST, $edge_lenght);
+    $image_footer = get_footer($_POST, $edge_lenght);
 
     //Вычисляем размеры итогового изображения
     $imageResultWidth = imagesx($image_map) + imagesx($image_legend);
-    $imageResultHeight = imagesy($image_header) + imagesy($image_map);
+    $imageResultHeight = imagesy($image_header) + imagesy($image_map) + imagesy($image_footer);
 
     //Создаем изображение
     $imageResult = imageCreateTrueColor($imageResultWidth, $imageResultHeight);
@@ -25,7 +26,9 @@
     imagecopy($imageResult, $image_map, 0, imagesy($image_header), 0, 0, imagesx($image_map), imagesy($image_map));
     //Копируем легенду
     imagecopy($imageResult, $image_legend, imagesx($image_map), imagesy($image_header), 0, 0, imagesx($image_legend), imagesy($image_legend));
-    
+    //Копируем подвал
+    imagecopy($imageResult, $image_footer, 0, imagesy($image_header) + imagesy($image_map) - 70, 0, 0, imagesx($image_footer), imagesy($image_footer));
+
     header('Content-type: image/png');
     $filename = "images//" . date("d-m-Y-H-i-s") . ".png";
     imagepng($imageResult, $filename);
@@ -33,6 +36,7 @@
     imageDestroy($image_map);
     imageDestroy($image_header);
     imageDestroy($image_legend);
+    imageDestroy($image_footer);
     imageDestroy($imageResult);
 
     echo($filename);

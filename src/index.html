@@ -281,15 +281,15 @@
                                    <table align="right" border="0">
                                         <tr>
                                              <td><label>Введите текст для заголовка:&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
-                                             <td><input class="header" id="header" type="text"></td>
+                                             <td><input class="header" id="header" name="header" type="text"></td>
                                         </tr>
                                         <tr>
                                              <td><label>Выберите цвет заливки:&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
-                                             <td><input class="color" id="color" type="color"></td>
+                                             <td><input class="color" id="color" name="color" type="color"></td>
                                         </tr>
                                         <tr>
                                              <td><label>Выберите цвет текста:&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
-                                             <td><input class="text_color" id="text_color" type="color"></td>
+                                             <td><input class="text_color" id="text_color" name="text_color" type="color"></td>
                                         </tr>
                                         <tr>
                                              <td><label>Импортировать xlsx файл:&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
@@ -311,28 +311,28 @@
                                    <table align="left" border="0">
                                         <tr>
                                              <td><label>Значение № 1:&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
-                                             <td><input id="legend_color_1" type="color"></td>
-                                             <td><input id="legend_text_1" type="text"></td>
+                                             <td><input id="legend_color_1" name="legend_color_1" type="color" value="#66ccff"></td>
+                                             <td><input id="legend_text_1" name="legend_text_1" type="text"></td>
                                         </tr>
                                         <tr>
                                              <td><label>Значение № 2:&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
-                                             <td><input id="legend_color_2" type="color"></td>
-                                             <td><input id="legend_text_2" type="text"></td>
+                                             <td><input id="legend_color_2" name="legend_color_2" type="color" value="#66ccff"></td>
+                                             <td><input id="legend_text_2" name="legend_text_2" type="text"></td>
                                         </tr>
                                         <tr>
                                              <td><label>Значение № 3:&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
-                                             <td><input id="legend_color_3" type="color"></td>
-                                             <td><input id="legend_text_3" type="text"></td>
+                                             <td><input id="legend_color_3" name="legend_color_3" type="color" value="#66ccff"></td>
+                                             <td><input id="legend_text_3" name="legend_text_3" type="text"></td>
                                         </tr>
                                         <tr>
                                              <td><label>Значение № 4:&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
-                                             <td><input id="legend_color_4" type="color"></td>
-                                             <td><input id="legend_text_4" type="text"></td>
+                                             <td><input id="legend_color_4" name="legend_color_4" type="color" value="#66ccff"></td>
+                                             <td><input id="legend_text_4" name="legend_text_4" type="text"></td>
                                         </tr>
                                         <tr>
                                              <td><label>Значение № 5:&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
-                                             <td><input id="legend_color_5" type="color"></td>
-                                             <td><input id="legend_text_5" type="text"></td>
+                                             <td><input id="legend_color_5" name="legend_color_5" type="color" value="#66ccff"></td>
+                                             <td><input id="legend_text_5" name="legend_text_5" type="text"></td>
                                         </tr>
                                    </table>
                               </form>
@@ -354,11 +354,19 @@
           $("div").on("submit", ".regions", function(event){
                event.preventDefault();
                var regionsData = $('#regions').serializeArray();
-               var text_color = $('#options').find('input[id="text_color"]').val();
-               regionsData.push({name: 'text_color', value: text_color});
-               
+               var optionsData = $('#options').serializeArray();
+               var legendData = $('#legend').serializeArray();
+
                var postData ={};
-               $.each(regionsData, function(i, field) {
+               $.each(regionsData, function(_, field) {
+                    postData[field.name] = field.value;
+               });
+
+               $.each(optionsData, function(_, field) {
+                    postData[field.name] = field.value;
+               });
+
+               $.each(legendData, function(_, field) {
                     postData[field.name] = field.value;
                });
 

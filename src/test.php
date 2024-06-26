@@ -111,9 +111,19 @@
         "text_color" => "#000000"
     ];
 
-    $image = get_map($data, 104);
+    $image = null;//get_map($data, 104);
+    if($image != null)
+    {
+        imageDestroy($image);
+    }
+        
+
+    var_dump($image);
+
+    /*
     header('Content-type: image/png');
     $filename = "test//" . date("d-m-Y-H-i-s") . ".png";
     imagepng($image, $filename);
     imageDestroy($image);
+    */
 ?>

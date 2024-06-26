@@ -48,7 +48,7 @@
         $rgb['r'] = hexdec($length == 6 ? substr($hex, 0, 2) : ($length == 3 ? str_repeat(substr($hex, 0, 1), 2) : 0));
         $rgb['g'] = hexdec($length == 6 ? substr($hex, 2, 2) : ($length == 3 ? str_repeat(substr($hex, 1, 1), 2) : 0));
         $rgb['b'] = hexdec($length == 6 ? substr($hex, 4, 2) : ($length == 3 ? str_repeat(substr($hex, 2, 1), 2) : 0));
-        if ( $alpha ) {
+        if ($alpha) {
             $rgb['a'] = $alpha;
         }
         return $rgb;
@@ -171,74 +171,98 @@
     }
 
 
-    function get_header($text_header, $edge_lenght)
+    function get_header($array_POST, $edge_lenght)
     {
-        // Размер шрифта
-        $fontSize = 60;
-        // Путь к файлу шрифта TTF
-        $fontPath = 'ttf//YandexSansDisplay-Regular.ttf'; // Замените на путь к вашему шрифту
-        // Определяем размер текста
-        $bbox = imagettfbbox($fontSize, 0, $fontPath, $text_header);
-        $textWidth = $bbox[2] - $bbox[0];
-        $textHeight = $bbox[1] - $bbox[7];
-        // Добавляем дополнительные отступы
-        $padding = 80;
-        // Устанавливаем размеры изображения
-        $imageWidth = 13 * $edge_lenght;
-        $imageHeight = $textHeight + 2 * $padding;
-        // Создаем пустое изображение с истинными цветами
-        $image = imagecreatetruecolor($imageWidth, $imageHeight);
-        // Устанавливаем цвет фона (прозрачный в данном случае)
-        $backgroundColor = imagecolorallocatealpha($image, 0, 0, 0, 127);
-        imagefill($image, 0, 0, $backgroundColor);
-        imagesavealpha($image, true);
-        // Устанавливаем цвет текста
-        $textColor = imagecolorallocate($image, 0, 0, 0);
-        // Вычисляем координаты для текста, чтобы он был по центру
-        $x = ($imageWidth - $textWidth) / 2;
-        $y = ($imageHeight + $textHeight) / 2 - $bbox[1] - 30;
-        // Добавляем текст на изображение
-        imagettftext($image, $fontSize, 0, $x, $y, $textColor, $fontPath, $text_header);
-        // Возвращаем изображение
-        return $image;
+        if($array_POST["header"] != "")
+        {
+            // Размер шрифта
+            $fontSize = 60;
+            // Путь к файлу шрифта TTF
+            $fontPath = 'ttf//YandexSansDisplay-Regular.ttf'; // Замените на путь к вашему шрифту
+            // Определяем размер текста
+            $bbox = imagettfbbox($fontSize, 0, $fontPath, $array_POST["header"]);
+            $textWidth = $bbox[2] - $bbox[0];
+            $textHeight = $bbox[1] - $bbox[7];
+            // Добавляем дополнительные отступы
+            $padding = 80;
+            // Устанавливаем размеры изображения
+            $imageWidth = imagesx(get_map($array_POST, $edge_lenght)) + imagesx(get_legend($array_POST, $edge_lenght));
+            $imageHeight = $textHeight + 2 * $padding;
+            // Создаем пустое изображение с истинными цветами
+            $image = imagecreatetruecolor($imageWidth, $imageHeight);
+            // Устанавливаем цвет фона (прозрачный в данном случае)
+            $backgroundColor = imagecolorallocatealpha($image, 0, 0, 0, 127);
+            imagefill($image, 0, 0, $backgroundColor);
+            imagesavealpha($image, true);
+            // Устанавливаем цвет текста
+            $textColor = imagecolorallocate($image, 0, 0, 0);
+            // Вычисляем координаты для текста, чтобы он был по центру
+            $x = ($imageWidth - $textWidth) / 2;
+            $y = ($imageHeight + $textHeight) / 2 - $bbox[1] - 30;
+            // Добавляем текст на изображение
+            imagettftext($image, $fontSize, 0, $x, $y, $textColor, $fontPath, $array_POST["header"]);
+            // Возвращаем изображение
+            return $image;
+        }
+        else
+        {
+            $image = imagecreatetruecolor(1, 1);
+            $backgroundColor = imagecolorallocatealpha($image, 0, 0, 0, 127);
+            imagefill($image, 0, 0, $backgroundColor);
+            imagesavealpha($image, true);
+            return $image;
+        }
     }
 
     function get_legend($array_POST, $edge_lenght)
     {
-        $fontPath = 'ttf//YandexSansDisplay-Regular.ttf';
-        $fontSize = 29;
-        $padding = 10;
-
-        $imageWidth = 2.5 * $edge_lenght + max(
-            imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_1'])[2],
-            imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_2'])[2],
-            imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_3'])[2],
-            imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_4'])[2],
-            imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_5'])[2],
-        ) + 0.5 * 104 + 10;
-        $imageHight = 21 * $edge_lenght * sqrt(3) / 2;
-        
-        $image = imageCreateTrueColor($imageWidth, $imageHight);
-        $backgroundColor = imagecolorallocatealpha($image, 0, 0, 0, 127);
-        imagefill($image, 0, 0, $backgroundColor);
-        imagesavealpha($image, true);
-
-        for($i = 1; $i <= 5; $i++)
+        if($array_POST['legend_text_1'] != "")
         {
-            if(mb_strlen($array_POST['legend_text_' . $i]) > 0)
-            {
-                $color = imageColorAllocate($image, hexToRgb($array_POST['legend_color_' . $i])['r'], hexToRgb($array_POST['legend_color_' . $i])['g'], hexToRgb($array_POST['legend_color_' . $i])['b']);
-                imageFilledPolygon($image, hex_coordinates($edge_lenght, 0, 1.5, 1 + 2 * $i), 6, $backgroundColor);
-                imageFilledPolygon($image, hex_coordinates($edge_lenght, 8, 1.5, 1 + 2 * $i), 6, imageColorAllocate($image, hexToRgb($array_POST['legend_color_' . $i])['r'], hexToRgb($array_POST['legend_color_' . $i])['g'], hexToRgb($array_POST['legend_color_' . $i])['b']));
-                
-                $bbox = imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_' . $i]);
-                $textWidth = $bbox[2] - $bbox[0];
-                $textHeight = $bbox[1] - $bbox[7];
-                imagettftext($image, $fontSize, 0, hex_coordinates($edge_lenght, 0, 1.5, 1 + 2 * $i)[0] + 3, hex_coordinates($edge_lenght, 0, 1.5, 1 + 2 * $i)[1] + $textHeight / 2, imageColorAllocate($image, 0, 0, 0), $fontPath, " - " . $array_POST['legend_text_' . $i]);
-            }
-            break;
-        }
+            $fontPath = 'ttf//YandexSansDisplay-Regular.ttf';
+            $fontSize = 29;
+            $padding = 10;
 
-        return $image;
+            $imageWidth = 2.5 * $edge_lenght + max(
+                imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_1'])[2],
+                imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_2'])[2],
+                imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_3'])[2],
+                imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_4'])[2],
+                imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_5'])[2],
+            ) + 1 * 104 + 10;
+            $imageHight = 21 * $edge_lenght * sqrt(3) / 2;
+            
+            $image = imageCreateTrueColor($imageWidth, $imageHight);
+            $backgroundColor = imagecolorallocatealpha($image, 0, 0, 0, 127);
+            imagefill($image, 0, 0, $backgroundColor);
+            imagesavealpha($image, true);
+
+            for($i = 1; $i <= 5; $i++)
+            {
+                if(mb_strlen($array_POST['legend_text_' . $i]) > 0)
+                {
+                    $color = imageColorAllocate($image, hexToRgb($array_POST['legend_color_' . $i])['r'], hexToRgb($array_POST['legend_color_' . $i])['g'], hexToRgb($array_POST['legend_color_' . $i])['b']);
+                    imageFilledPolygon($image, hex_coordinates($edge_lenght, 0, 2, 1 + 2 * $i), 6, $backgroundColor);
+                    imageFilledPolygon($image, hex_coordinates($edge_lenght, 32, 2, 1 + 2 * $i), 6, imageColorAllocate($image, hexToRgb($array_POST['legend_color_' . $i])['r'], hexToRgb($array_POST['legend_color_' . $i])['g'], hexToRgb($array_POST['legend_color_' . $i])['b']));
+                    
+                    $bbox = imagettfbbox($fontSize, 0, $fontPath, $array_POST['legend_text_' . $i]);
+                    $textWidth = $bbox[2] - $bbox[0];
+                    $textHeight = $bbox[1] - $bbox[7];
+                    imagettftext($image, $fontSize, 0, hex_coordinates($edge_lenght, 0, 1.75, 1 + 2 * $i)[0] + 3, hex_coordinates($edge_lenght, 0, 1.5, 1 + 2 * $i)[1] + $textHeight / 2, imageColorAllocate($image, 0, 0, 0), $fontPath, " - " . $array_POST['legend_text_' . $i]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return $image;
+        }
+        else
+        {
+            $image = imageCreateTrueColor(1, 1);
+            $backgroundColor = imagecolorallocatealpha($image, 0, 0, 0, 127);
+            imagefill($image, 0, 0, $backgroundColor);
+            imagesavealpha($image, true);
+            return $image;
+        }   
     }
 ?>

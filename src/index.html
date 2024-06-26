@@ -570,6 +570,7 @@
           item.classList.add('cube');
 
           item.addEventListener('click', (e) => {
+               legendParent.querySelector('input').value = e.currentTarget.getAttribute('data-color');
                legendParent.querySelector('input').setAttribute('value', e.currentTarget.getAttribute('data-color'));
                legendParent.querySelector('.fixed-overlay').style.display = 'none'
           })
@@ -605,7 +606,7 @@
 
                     item.addEventListener('click', (e) => {
                          legend.querySelector('input').setAttribute('value', e.currentTarget.getAttribute('data-color')); 
-
+                         legend.querySelector('input').value = e.currentTarget.getAttribute('data-color');
                          fixedOverlay.style.display = 'none'
                     })
 

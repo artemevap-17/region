@@ -197,7 +197,7 @@
             // Устанавливаем цвет текста
             $textColor = imagecolorallocate($image, 0, 0, 0);
             // Вычисляем координаты для текста, чтобы он был по центру
-            $x = ($imageWidth - $textWidth) / 2;
+            $x = ($imageWidth - $textWidth - imagesx(get_legend($array_POST, $edge_lenght))) / 2;
             $y = ($imageHeight + $textHeight) / 2 - $bbox[1] - 30;
             // Добавляем текст на изображение
             imagettftext($image, $fontSize, 0, $x, $y, $textColor, $fontPath, $array_POST["header"]);
